@@ -1,9 +1,18 @@
-inventory= [] 
+inventory= []
+
+def add_product(name, price, quantity):
+    product= {
+        "name": name,
+        "price": price,
+        "quantity": quantity
+    }
+    inventory.append(product)
+    print(f"Product '{name}' added successfully to the inventory.") 
 
 to_continue= 1
 while to_continue==1:
     
-    print(f""" {'-'*20}MENÚ INVENTARIO{'-'*20}
+    print(f""" {'-'*20}INVENTORY MENU{'-'*20}
     1. Add Product
     2. Show Inventory
     3. Calculate Statistics
@@ -17,16 +26,49 @@ while to_continue==1:
         
         if opt_menu == 1:
             
-            print(f" {'-'*20}PRODUCT ADDITION MODULE{'-'*20}")
+            keep_adding= 1
+            while keep_adding==1:
+            
+                print(f"\n {'-'*20}PRODUCT ADDITION MODULE{'-'*20}")
+                
+                product_name= input("Enter the product name: ")
+                product_price= float(input("Enter the product price: "))
+                product_quantity= int(input("Enter the product quantity: "))
+                
+                add_product(product_name, product_price, product_quantity)
+                
+                keep_adding= int(input("Do you want to continue adding products? (1 for Yes, another number for No): "))
+                
+                print("You chose continue adding another product \n") if keep_adding==1 else print("Returning to the main menu... \n")
+                
             
         elif opt_menu == 2:
-            print()
             
-        elif opt_menu == 3: 
-            print()
+            print(f"\n {'-'*20}INVENTORY SHOW MODULE{'-'*20}")
+            
+            if not inventory:
+                print("The inventory is currently empty. No products to show. \n")
+            
+            for product in inventory:
+                print(f"Name: {product['name']} | Price: {product['price']} | Quantity: {product['quantity']}")
+            
+        elif opt_menu == 3:
+            print(f"\n {'-'*20}STATISTICS MODULE{'-'*20}")
+            
+            if not inventory:
+                print("The inventory is currently empty. No statistics to calculate. \n")
+            
+            else:
+            
+                total_value= sum(product['price']*product['quantity'] for product in inventory)
+                total_items= sum(product['quantity'] for product in inventory)
+                
+                print(f"Total Inventory Value: ${total_value:.2f}")
+                print(f"Total Number of Items: {total_items}")
+            
 
         elif opt_menu == 4:
-            print("Exiting the program...")
+            print("Thank you for using our program! Exiting...")
             to_continue=0
             
     else:
