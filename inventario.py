@@ -8,7 +8,29 @@ def add_product(name, price, quantity):
     }
     inventory.append(product)
     print(f"Product '{name}' added successfully to the inventory.") 
+    
+    
+def show_inventory():
+    if not inventory:
+        print("The inventory is currently empty. No products to show.")
+    else:
+        for product in inventory:
+            print(f"Name: {product['name']} | Price: {product['price']} | Quantity: {product['quantity']}")
 
+def calculate_statistics():
+        if not inventory:
+                print("The inventory is currently empty. No statistics to calculate. \n")
+            
+        else:
+            
+            total_value= sum(product['price']*product['quantity'] for product in inventory)
+            total_items= sum(product['quantity'] for product in inventory)
+                
+            print(f"Total Inventory Value: ${total_value:.2f}")
+            print(f"Total Number of Items: {total_items}")
+            
+            
+            
 to_continue= 1
 while to_continue==1:
     
@@ -46,25 +68,12 @@ while to_continue==1:
             
             print(f"\n {'-'*20}INVENTORY SHOW MODULE{'-'*20}")
             
-            if not inventory:
-                print("The inventory is currently empty. No products to show. \n")
-            
-            for product in inventory:
-                print(f"Name: {product['name']} | Price: {product['price']} | Quantity: {product['quantity']}")
+            show_inventory()
             
         elif opt_menu == 3:
             print(f"\n {'-'*20}STATISTICS MODULE{'-'*20}")
             
-            if not inventory:
-                print("The inventory is currently empty. No statistics to calculate. \n")
-            
-            else:
-            
-                total_value= sum(product['price']*product['quantity'] for product in inventory)
-                total_items= sum(product['quantity'] for product in inventory)
-                
-                print(f"Total Inventory Value: ${total_value:.2f}")
-                print(f"Total Number of Items: {total_items}")
+            calculate_statistics()
             
 
         elif opt_menu == 4:
