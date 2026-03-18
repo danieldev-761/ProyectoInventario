@@ -1,6 +1,7 @@
 inventory= []
 
 def add_product(name, price, quantity):
+    
     product= {
         "name": name,
         "price": price,
@@ -53,10 +54,52 @@ while to_continue==1:
             
                 print(f"\n {'-'*20}PRODUCT ADDITION MODULE{'-'*20}")
                 
-                product_name= input("Enter the product name: ")
-                product_price= float(input("Enter the product price: "))
-                product_quantity= int(input("Enter the product quantity: "))
-                
+                valid_input= False
+                exit_module= False
+                while not valid_input:
+                    
+                    exit_option= input("Return to the main menu? (1: Yes, ENTER TO CONTINUE) ")
+
+                    if exit_option == "1":
+                        exit_module= True
+                        break
+                    
+                    product_name= input("Enter the product name: ").capitalize()
+                    
+                    if product_name.strip() == "" or product_name.isdigit():
+                        print("Error: Product name cannot be empty or only digit. Please enter a valid name.")
+                        continue
+
+                    price_str = input("Enter the product price: ")
+                    
+                    try:
+                        product_price = float(price_str)
+                    except ValueError:
+                        print("Error: Please enter a valid number for the product price.")
+                        continue
+                    
+                    if product_price < 0:
+                        print("Error: Product price cannot be negative. Please enter a valid price.")
+                        continue
+
+                    qty_str = input("Enter the product quantity: ")
+                    
+                    try:
+                        product_quantity = int(qty_str)
+                    except ValueError:
+                        print("Error: Please enter a valid integer for the product quantity.")
+                        continue
+                    
+                    if product_quantity < 0:
+                        print("Error: Product quantity cannot be negative. Please enter a valid quantity.")
+                        continue
+
+                    valid_input = True
+                    
+                if exit_module:
+                    print("Returning to main menu...\n")
+                    break   
+
                 add_product(product_name, product_price, product_quantity)
                 
                 keep_adding= int(input("Do you want to continue adding products? (1 for Yes, another number for No): "))
