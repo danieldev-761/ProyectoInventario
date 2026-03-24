@@ -112,13 +112,20 @@ def calculate_statistics(inventory):
     tuple: A tuple containing (total_value, total_items).
     """
     if not inventory:
-        return 0, 0
-    total_value = sum(product['price'] * product['quantity'] for product in inventory)
+        return 0, 0, None, None
+    
+    subtotal_value= (lambda product: product["price"] * product["quantity"])
+    
+    total_value = sum(subtotal_value(product) for product in inventory)
     total_items = sum(product['quantity'] for product in inventory)
-    return total_value, total_items
+    
+    most_expensive= max(inventory, key=lambda x: x['price'])
+    larger_inventory= max(inventory, key=lambda x: x['quantity'])
+    
+    return total_value, total_items, most_expensive, larger_inventory
 
 # Function to validate user input
-def validate_input(prompt, type_func, condition=None, error_msg="Invalid Input."):
+def validate_input(prompt, type_func, condition=None, error_msg="Invalid Input.", allow_empty= False):
     """
     Validates user input.
 
@@ -131,15 +138,22 @@ def validate_input(prompt, type_func, condition=None, error_msg="Invalid Input."
     Returns:
     The converted and validated value.
     """
+    
+    
+    
     valid = False
     while not valid:
+                
         user_input = input(prompt)
         try:
-            value = type_func(user_input)
-            if condition and not condition(value):
-                print(error_msg)
-                continue
-            valid = True
-            return value
+            if allow_empty and user_input == "":
+                return None
+            else: 
+                value = type_func(user_input)
+                if condition and not condition(value):
+                    print(error_msg)
+                    continue
+                valid = True
+                return value
         except ValueError:
             print(error_msg)

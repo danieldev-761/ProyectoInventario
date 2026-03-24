@@ -1,9 +1,13 @@
 #import functions from funciones.py
 from servicios import *
+from archivos import *
+
 
 #initialize inventory list 
 inventory= []            
-            
+
+#flag to track unsaved changes
+unsaved_changes = False      
             
 #main menu loop: while to continue is 1, the menu will keep showing, if the user chooses to exit, it will change to 0 and the loop will end           
 to_continue= 1
@@ -16,7 +20,9 @@ while to_continue==1:
     4. Update Product
     5. Delete Product
     6. Calculate Statistics
-    7. Exit \n""")
+    7. Save CSV
+    8. Load CSV
+    9. Exit \n""")
     
     
     opt_menu= (input("Please, enter a menu option (1-9): "))
@@ -26,7 +32,7 @@ while to_continue==1:
         print("Error: Input cannot be empty. Please enter a valid option.")
         continue
     
-    if 0< int(opt_menu)<5:
+    if 0< int(opt_menu)<10:
         
         #OPTION 1: Add Product
         if opt_menu == "1":
@@ -61,6 +67,7 @@ while to_continue==1:
                     #validate product quantity: not empty, must be a number, must be greater than or equal to 0, if invalid show error message and ask for input again
                     product_quantity = validate_input("Enter the product quantity: ", int, lambda x: x >= 0, "Error: Product quantity cannot be negative or empty. Please enter a valid quantity.")
                     
+                    valid_input= True
                     
                 #if the user chose to exit the module, break the loop and return to the main menu
                 if exit_module:
@@ -70,7 +77,11 @@ while to_continue==1:
                 #add the product to the inventory if is all valid and show a success message
                 add_product(inventory, product_name, product_price, product_quantity)
                 
+                unsaved_changes = True
+                
                 print(f"Product '{product_name}' added successfully to the inventory. \n") 
+                
+                
                 
                 # ask the user if they want to keep adding products, if they choose to continue
                 keep_adding= (input("Do you want to continue adding products? (1 for Yes, another number or char for No): "))
@@ -117,11 +128,18 @@ while to_continue==1:
                 print(f"Product found: Name: {found_product['name']} | Price: {found_product['price']} | Quantity: {found_product['quantity']}\n")
                 
                 #ask for new price and quantity
-                new_price = validate_input("Enter the new price (or press Enter to keep current): ", float, lambda x: x >= 0, "Error: Price must be a positive number.")
-                new_quantity = validate_input("Enter the new quantity (or press Enter to keep current): ", int, lambda x: x >= 0, "Error: Quantity must be a positive integer.")
+                new_price = validate_input("Enter the new price (or press Enter to keep current): ", float, lambda x: x >= 0, "Error: Price must be a positive number.", allow_empty=True)
+                new_quantity = validate_input("Enter the new quantity (or press Enter to keep current): ", int, lambda x: x >= 0, "Error: Quantity must be a positive integer.", allow_empty=True)
                 
+                if new_price is None:
+                    new_price = found_product["price"]
+
+                if new_quantity is None:
+                    new_quantity = found_product["quantity"]
+    
                 #call the function to update the product and show a success message
                 if update_product(inventory, update_name, new_price, new_quantity):
+                    unsaved_changes = True
                     print(f"Product '{update_name}' updated successfully.\n")
                 else:
                     print(f"Failed to update product '{update_name}'.\n")
@@ -137,6 +155,7 @@ while to_continue==1:
             
             #call the function to delete the product and show a message personlized depending on the result
             if delete_product(inventory, delete_name):
+                unsaved_changes = True
                 print(f"Product '{delete_name}' deleted successfully from the inventory.\n")
             else:
                 print(f"Product '{delete_name}' not found in the inventory. No deletion performed.\n")
@@ -147,7 +166,7 @@ while to_continue==1:
             print(f"\n {'-'*20}STATISTICS MODULE{'-'*20} \n")
             
             #call the function and store the results in variables
-            total_value, total_items = calculate_statistics(inventory)
+            total_value, total_items, most_expensive, larger_inventory = calculate_statistics(inventory)
             
             #if the inventory is empty, show this message
             if total_value == 0 and total_items == 0:
@@ -157,12 +176,40 @@ while to_continue==1:
             else:
                 print(f"Total Inventory Value: ${total_value:.2f}")
                 print(f"Total Number of Items: {total_items}")
+                print(f"Most Expensive Product: Name: {most_expensive['name']} | Price: {most_expensive['price']}")
+                print(f"Product with Largest Inventory: Name: {larger_inventory['name']} | Quantity: {larger_inventory['quantity']}")
 
-        #OPTION 7: Exit
+        #OPTION 7: Save Inventory to CSV
         elif opt_menu == "7":
-            print("Thank you for using our program! Exiting...")
-            to_continue=0
+            print(f"\n {'-'*20}SAVING INVENTORY TO CSV{'-'*20} \n")
+        
+            save_csv(inventory)
+            unsaved_changes = False
             
+        #OPTION 8: Load CSV
+        elif opt_menu== "8":
+            
+            print(f"\n {'-'*20}LOADING CSV{'-'*20} \n")
+            
+            inventory= load_csv(inventory)
+            unsaved_changes = False
+            
+                    
+                    
+        #OPTION 9: Exit
+        elif opt_menu == "9":
+        
+            if unsaved_changes:
+                confirm = input("You have unsaved changes. Save before exiting? ( Y / N(Another char) ): ").strip().upper()
+
+                if confirm == "Y":
+                    save_csv(inventory)
+                    print("Changes saved.")
+
+                else:
+                    print("Thank you for using our program! Exiting...")
+                    to_continue=0
+                
     #if the user input is not a number between 1 and 4, show an error message and ask for input again      
     else:
         print("Error: Invalid option, please enter a number between 1 and 4.")
