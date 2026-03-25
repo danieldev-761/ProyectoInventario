@@ -205,21 +205,14 @@ while to_continue==1:
                 if confirm == "Y":
                     save_csv(inventory)
                     print("Changes saved.")
-
-                else:
-                    print("Thank you for using our program! Exiting...")
                     to_continue=0
+
+            else:
+                print("Thank you for using our program! Exiting...")
+                to_continue=0
                 
     #if the user input is not a number between 1 and 4, show an error message and ask for input again      
     else:
         print("Error: Invalid option, please enter a number between 1 and 4.")
         
         
-'''
-Objetivo de la semana 2: Crear un programa de inventario que permita al usuario agregar productos, 
-mostrar el inventario y calcular estadísticas básicas como el valor total del inventario 
-y la cantidad total de productos. El programa debe ser fácil de usar y manejar entradas inválidas de manera adecuada, 
-además de incluir código modularizado con funciones.
-
-
-'''

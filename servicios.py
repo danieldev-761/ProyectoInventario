@@ -45,7 +45,7 @@ def show_inventory(inventory):
 # Function to search for a product by name
 def search_product(inventory, name):
     """
-    Searches for a product by name in the inventory.
+    If inventory is not None: Searches for a product by name in the inventory.
 
     Parameters:
     inventory (list): The list of products in the inventory.
@@ -54,6 +54,10 @@ def search_product(inventory, name):
     Returns:
     dict or None: The product dictionary if found, None otherwise.
     """
+    if not inventory:
+        print("The inventory is currently empty. No products to search.\n")
+        return None
+    
     for product in inventory:
         if product['name'] == name:
             return product
@@ -62,7 +66,7 @@ def search_product(inventory, name):
 # Function to update a product's price and/or quantity
 def update_product(inventory, name, new_price=None, new_quantity=None):
     """
-    Updates the price and/or quantity of a product in the inventory.
+    If Inventory is not None: Updates the price and/or quantity of a product in the inventory.
 
     Parameters:
     inventory (list): The list of products in the inventory.
@@ -73,6 +77,11 @@ def update_product(inventory, name, new_price=None, new_quantity=None):
     Returns:
     bool: True if the product was updated, False if not found.
     """
+    if not inventory:
+        print("The inventory is currently empty. No products to update.\n")
+        return False
+
+
     for product in inventory:
         if product['name'] == name:
             if new_price is not None:
@@ -85,7 +94,7 @@ def update_product(inventory, name, new_price=None, new_quantity=None):
 # Function to delete a product by name
 def delete_product(inventory, name):
     """
-    Removes a product from the inventory by name.
+    If Inventory is not None: Removes a product from the inventory by name.
 
     Parameters:
     inventory (list): The list of products in the inventory.
@@ -94,6 +103,11 @@ def delete_product(inventory, name):
     Returns:
     bool: True if the product was removed, False if not found.
     """
+    
+    if not inventory:
+        print("The inventory is currently empty. No products to delete.\n")
+        return False
+    
     for i, product in enumerate(inventory):
         if product['name'] == name:
             del inventory[i]
