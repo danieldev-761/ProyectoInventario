@@ -78,7 +78,7 @@ def load_csv(current_inventory, path= DEFAULTPATH):
                     price = float(price)
                     quantity = int(quantity)
 
-                    if price < 0 or quantity < 0:
+                    if (name.strip()== "") or (price < 0) or (quantity < 0):
                         raise ValueError
 
                     loaded_inventory.append({
