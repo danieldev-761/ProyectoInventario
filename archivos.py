@@ -1,4 +1,5 @@
-import csv
+import csv, os
+
 
 DEFAULTPATH= 'inventory.csv'
 
@@ -16,15 +17,34 @@ def save_csv(inventory, path= DEFAULTPATH, include_header= True):
         
         if 'csv' in file_type:
             
+            file_exists = os.path.exists(path)
+
+            if os.path.exists(path):
+                
+                print("Warning: appending will duplicate existing data.\n")
+                print("Warning: overwriting will replace what you had saved in the file\n")
+                
+                option = input("File exists. Overwrite (O) or Append (A)? ").upper()
+                
+
+                if option == "A":
+                    mode = "a"
+                    
+                else:
+                    mode = "w"
+                    
+            else:
+                mode = "w"
+            
             #Open file in write mode
-            with open(path, mode="w", newline="", encoding="utf-8") as file:
+            with open(path, mode=mode, newline="", encoding="utf-8") as file:
                 writer = csv.DictWriter(
                     file,
                     fieldnames=["name", "price", "quantity"]
                 )
 
                 # Write header if required
-                if include_header:
+                if mode == "w" and include_header:
                     writer.writeheader()
 
                 # Write data
