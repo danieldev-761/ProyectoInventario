@@ -211,8 +211,8 @@ while to_continue==1:
                 print("Thank you for using our program! Exiting...")
                 to_continue=0
                 
-    #if the user input is not a number between 1 and 4, show an error message and ask for input again      
+    #if the user input is not a number between 1 and 9, show an error message and ask for input again      
     else:
-        print("Error: Invalid option, please enter a number between 1 and 4.")
+        print("Error: Invalid option, please enter a number between 1 and 9.")
         
         
